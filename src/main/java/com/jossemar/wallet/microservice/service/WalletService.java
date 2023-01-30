@@ -8,9 +8,9 @@ import reactor.core.publisher.Mono;
 public interface WalletService {
     Mono<Wallet> save(Mono<Wallet> wallet);
     Flux<Wallet> findAll();
-    Flux<Wallet> findAllByCustomerId(String customerId);
     Mono<Wallet> findById(String id);
     Mono<Wallet> update(Mono<Wallet> wallet, String id);
     Mono<Void> deleteById(String id);
     Mono<Void> validBySwap(Swap swap);
+    Mono<Wallet> findByCustomer(String customer);
 }

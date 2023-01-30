@@ -52,4 +52,11 @@ public class WalletController implements WalletApi {
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
+
+    @Override
+    public Mono<ResponseEntity<Wallet>> findByCustomer(String customer, ServerWebExchange exchange) {
+        return service.findByCustomer(customer)
+                .map(ResponseEntity::ok)
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
 }

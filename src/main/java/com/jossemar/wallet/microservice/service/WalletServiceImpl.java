@@ -66,8 +66,8 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Flux<Wallet> findAllByCustomerId(String customerId) {
-        return repository.findAllByCustomerId(customerId)
+    public Mono<Wallet> findByCustomer(String customer) {
+        return repository.findFirstByCustomerId(customer)
                 .map(mapper::toModel);
     }
 
@@ -79,65 +79,6 @@ public class WalletServiceImpl implements WalletService {
         return true;
     }
 
-    /*@Override
-    public Mono<Void> validBySwap(Swap swap) {
-        return findById(swap.getWalletId())
-                //validar que exista la billetera
-                .switchIfEmpty(Mono.defer(() -> {
-                    kafkaTemplate.sendMessage(Event.<Wallet>builder()
-                                    .id(swap.getId())
-                                    .type(EventType.NOT_FOUND)
-                            .build());
-                    return Mono.empty();
-                }))
-                .flatMap(w -> {
-                    //validar que exista el tipo de moneda
-                    if (w.getCoin().stream().noneMatch(c -> c.getCoinType().getValue().equals(swap.getCoinType()))) {
-                        kafkaTemplate.sendMessage(Event.<Wallet>builder()
-                                .id(swap.getId())
-                                .type(EventType.INVALID_COIN)
-                                .build());
-                        return Mono.empty();
-                    }
-                    else {
-                        w.getCoin().forEach(c -> {
-                            if (c.getCoinType().getValue().equals(swap.getCoinType())) {
-                                //validar que haya saldo suficiente
-                                if (c.getAvailableAmount().compareTo(swap.getAmount()) < 0) {
-                                    kafkaTemplate.sendMessage(Event.<Wallet>builder()
-                                            .id(swap.getId())
-                                            .type(EventType.LOW_BALANCE)
-                                            .build());
-                                }
-                                else {
-                                    //Restar saldo de la billetera
-                                    c.setAvailableAmount(c.getAvailableAmount().subtract(swap.getAmount()));
-                                }
-                            }
-                        });
-                        return Mono.just(w);
-                    }
-                })
-                .flatMap(w -> {
-                    //validar que exista la billetera de destino
-                    return findById(swap.getReferenceId())
-                            .switchIfEmpty(Mono.defer(() -> {
-                                kafkaTemplate.sendMessage(Event.<Wallet>builder()
-                                        .id(swap.getId())
-                                        .type(EventType.INVALID_DESTINATION)
-                                        .build());
-                                return Mono.empty();
-                            }))
-                            .then(Mono.just(w));
-                })
-                //actulizar billetera y enviar exito
-                .flatMap(w -> update(Mono.just(w), swap.getId())
-                        .doOnNext(v -> kafkaTemplate.sendMessage(Event.<Wallet>builder()
-                                .id(swap.getId())
-                                .type(EventType.VALID)
-                                .build())))
-                .then();
-    }*/
     @Override
     public Mono<Void> validBySwap(Swap swap) {
         AtomicBoolean isTransactionValid = new AtomicBoolean(true);
