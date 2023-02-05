@@ -157,8 +157,6 @@ components:
     Coin:
       required:
         - coinType
-        - buyWithPEN
-        - saleWithPEN
       type: object
       properties:
         coinType:
@@ -172,16 +170,6 @@ components:
           format: currency
           description: Available Amount
           example: 10.00
-        buyWithPEN:
-          type: number
-          format: currency
-          description: Buy With PEN
-          example: 3.8120
-        saleWithPEN:
-          type: number
-          format: currency
-          description: Sale With PEN
-          example: 3.8470
     Wallet:
       required:
         - status

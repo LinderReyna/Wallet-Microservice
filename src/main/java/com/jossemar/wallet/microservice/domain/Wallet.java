@@ -1,5 +1,6 @@
 package com.jossemar.wallet.microservice.domain;
 
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Data
 @Document
+@Builder
 public class Wallet {
     @Id
     private String id;
